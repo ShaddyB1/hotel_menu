@@ -36,7 +36,7 @@
 
         .tab-button {
             padding: 12px 24px;
-            background: #fff;
+            background: white;
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
             cursor: pointer;
@@ -56,7 +56,7 @@
             color: white;
         }
 
-        .menu-section {
+        .section {
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -64,7 +64,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .menu-section h2 {
+        .section h2 {
             color: var(--primary-color);
             margin-top: 0;
             padding-bottom: 10px;
@@ -96,48 +96,33 @@
             width: 120px;
         }
 
-        .save-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease;
-        }
-
-        .save-btn:hover {
-            background: #218838;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .delete-btn:hover {
-            background: #c82333;
-        }
-
-        .add-item-btn {
+        button {
             background: var(--secondary-color);
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
-        .add-item-btn:hover {
+        button:hover {
             background: var(--primary-color);
+        }
+
+        .save-btn {
+            background: #28a745;
+            padding: 12px 30px;
+            font-size: 16px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            padding: 8px 16px;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
         }
 
         #qrcode {
@@ -157,11 +142,11 @@
             display: block;
         }
 
-        .sticky-footer {
+        .sticky-save {
             position: sticky;
             bottom: 20px;
-            padding: 20px;
             background: white;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             text-align: center;
@@ -179,27 +164,24 @@
         </div>
 
         <div id="editor" class="tab-content active">
-            <div id="menuEditor">
-                <!-- Menu sections will be dynamically inserted here -->
-            </div>
-
-            <div class="sticky-footer">
+            <div id="menuEditor"></div>
+            <div class="sticky-save">
                 <button onclick="saveChanges()" class="save-btn">Save All Changes</button>
             </div>
         </div>
 
         <div id="qr" class="tab-content">
-            <div class="menu-section">
+            <div class="section">
                 <h2>Menu QR Code</h2>
                 <p>Generate a QR code that links to your menu. Customers can scan this to view the menu on their phones.</p>
-                <button onclick="generateQR()" class="add-item-btn">Generate New QR Code</button>
+                <button onclick="generateQR()">Generate New QR Code</button>
                 <div id="qrcode"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Menu data structure
+        // Menu data
         let menuData = {
             sections: [
                 {
@@ -256,11 +238,11 @@
             ]
         };
 
-        // Function to render the menu editor
+        // Render menu editor
         function renderMenu() {
             const editor = document.getElementById('menuEditor');
             editor.innerHTML = menuData.sections.map((section, sectionIndex) => `
-                <div class="menu-section">
+                <div class="section">
                     <h2>${section.name}</h2>
                     ${section.items.map((item, itemIndex) => `
                         <div class="menu-item">
@@ -271,23 +253,23 @@
                             <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
                         </div>
                     `).join('')}
-                    <button class="add-item-btn" onclick="addItem(${sectionIndex})">Add New Item</button>
+                    <button onclick="addItem(${sectionIndex})">Add New Item</button>
                 </div>
             `).join('');
         }
 
-        // Function to update an item
+        // Update item
         function updateItem(sectionIndex, itemIndex, field, value) {
             menuData.sections[sectionIndex].items[itemIndex][field] = value;
         }
 
-        // Function to delete an item
+        // Delete item
         function deleteItem(sectionIndex, itemIndex) {
             menuData.sections[sectionIndex].items.splice(itemIndex, 1);
             renderMenu();
         }
 
-        // Function to add a new item
+        // Add new item
         function addItem(sectionIndex) {
             menuData.sections[sectionIndex].items.push({
                 name: 'New Item',
@@ -296,8 +278,9 @@
             renderMenu();
         }
 
-        // Function to save changes
+        // Save changes
         function saveChanges() {
+            // Generate menu.html content
             const menuContent = generateMenuHtml();
             const blob = new Blob([menuContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
@@ -307,7 +290,7 @@
             a.click();
         }
 
-        // Function to show/hide tabs
+        // Show/hide tabs
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -320,7 +303,7 @@
             document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
         }
 
-        // Function to generate QR code
+        // Generate QR code
         function generateQR() {
             const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
             const menuUrl = baseUrl + '/menu.html';
@@ -338,9 +321,8 @@
             });
         }
 
-        // Function to generate menu HTML
+        // Generate menu HTML
         function generateMenuHtml() {
-            // Copy your existing menu.html content here and populate it with menuData
             return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -421,7 +403,7 @@
         .menu-section.active {
             display: block;
         }
-
+        
         .menu-section h2 {
             color: var(--primary-color);
             border-bottom: 2px solid var(--secondary-color);
@@ -444,7 +426,8 @@
         .menu-item:hover {
             transform: translateX(10px);
             background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px
+            4px rgba(0,0,0,0.1);
         }
         
         .item-name {
