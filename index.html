@@ -25,150 +25,181 @@
             padding: 20px;
         }
 
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        .heading {
+            color: var(--primary-color);
+            margin-bottom: 30px;
         }
 
-        h1, h2 {
+        .tabs {
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: #fff;
+            border: 2px solid var(--primary-color);
             color: var(--primary-color);
-            margin-top: 0;
+            cursor: pointer;
+            margin-right: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .tab-button.active {
+            background: var(--primary-color);
+            color: white;
         }
 
         .menu-section {
             background: white;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 10px 0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .menu-section h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
         }
 
         .menu-item {
             display: flex;
             align-items: center;
             padding: 10px;
-            background-color: var(--background-color);
-            border-radius: 4px;
-            margin: 5px 0;
-            gap: 10px;
+            margin: 10px 0;
+            background: var(--background-color);
+            border-radius: 6px;
+            gap: 15px;
         }
 
         .menu-item input {
-            padding: 5px;
+            padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .menu-item input[type="number"] {
-            width: 100px;
+            font-size: 15px;
         }
 
         .menu-item input[type="text"] {
             flex-grow: 1;
         }
 
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .menu-item input[type="number"] {
+            width: 120px;
         }
 
-        button:hover {
-            background-color: var(--primary-color);
+        .save-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .save-btn:hover {
+            background: #218838;
         }
 
         .delete-btn {
-            background-color: #dc3545;
-            padding: 5px 10px;
-        }
-
-        .add-btn {
-            background-color: var(--secondary-color);
-            margin: 10px 0;
-        }
-
-        .tab-navigation {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #ddd;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .tab-button.active {
-            background-color: var(--primary-color);
+            background: #dc3545;
             color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .add-item-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .add-item-btn:hover {
+            background: var(--primary-color);
         }
 
         #qrcode {
             margin: 20px 0;
             text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .instructions {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 10px 0;
+        .tab-content {
+            display: none;
         }
 
-        .save-section {
+        .tab-content.active {
+            display: block;
+        }
+
+        .sticky-footer {
             position: sticky;
             bottom: 20px;
-            background-color: white;
             padding: 20px;
+            background: white;
             border-radius: 8px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             text-align: center;
-            margin-top: 20px;
-        }
-
-        .save-btn {
-            background-color: #28a745;
-            font-size: 16px;
-            padding: 12px 30px;
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Hotel Green Menu Manager</h1>
+        <h1 class="heading">Hotel Green Menu Manager</h1>
 
-        <div class="tab-navigation">
+        <div class="tabs">
             <button class="tab-button active" onclick="showTab('editor')">Menu Editor</button>
             <button class="tab-button" onclick="showTab('qr')">QR Code</button>
         </div>
 
-        <div id="editor-tab" class="section">
+        <div id="editor" class="tab-content active">
             <div id="menuEditor">
-                <!-- Menu sections will be populated here -->
+                <!-- Menu sections will be dynamically inserted here -->
             </div>
 
-            <div class="save-section">
+            <div class="sticky-footer">
                 <button onclick="saveChanges()" class="save-btn">Save All Changes</button>
             </div>
         </div>
 
-        <div id="qr-tab" class="section" style="display: none;">
-            <button onclick="generateQR()">Generate QR Code</button>
-            <div id="qrcode"></div>
+        <div id="qr" class="tab-content">
+            <div class="menu-section">
+                <h2>Menu QR Code</h2>
+                <p>Generate a QR code that links to your menu. Customers can scan this to view the menu on their phones.</p>
+                <button onclick="generateQR()" class="add-item-btn">Generate New QR Code</button>
+                <div id="qrcode"></div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Menu data structure
         let menuData = {
             sections: [
                 {
@@ -225,6 +256,7 @@
             ]
         };
 
+        // Function to render the menu editor
         function renderMenu() {
             const editor = document.getElementById('menuEditor');
             editor.innerHTML = menuData.sections.map((section, sectionIndex) => `
@@ -234,25 +266,28 @@
                         <div class="menu-item">
                             <input type="text" value="${item.name}" 
                                 onchange="updateItem(${sectionIndex}, ${itemIndex}, 'name', this.value)">
-                            <input type="number" step="0.01" value="${item.price}" 
+                            <input type="number" step="0.01" min="0" value="${item.price}" 
                                 onchange="updateItem(${sectionIndex}, ${itemIndex}, 'price', this.value)">
                             <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
                         </div>
                     `).join('')}
-                    <button class="add-btn" onclick="addItem(${sectionIndex})">Add Item</button>
+                    <button class="add-item-btn" onclick="addItem(${sectionIndex})">Add New Item</button>
                 </div>
             `).join('');
         }
 
+        // Function to update an item
         function updateItem(sectionIndex, itemIndex, field, value) {
             menuData.sections[sectionIndex].items[itemIndex][field] = value;
         }
 
+        // Function to delete an item
         function deleteItem(sectionIndex, itemIndex) {
             menuData.sections[sectionIndex].items.splice(itemIndex, 1);
             renderMenu();
         }
 
+        // Function to add a new item
         function addItem(sectionIndex) {
             menuData.sections[sectionIndex].items.push({
                 name: 'New Item',
@@ -261,7 +296,51 @@
             renderMenu();
         }
 
+        // Function to save changes
+        function saveChanges() {
+            const menuContent = generateMenuHtml();
+            const blob = new Blob([menuContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'menu.html';
+            a.click();
+        }
+
+        // Function to show/hide tabs
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+
+        // Function to generate QR code
+        function generateQR() {
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+            const menuUrl = baseUrl + '/menu.html';
+            
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            
+            new QRCode(qrContainer, {
+                text: menuUrl,
+                width: 256,
+                height: 256,
+                colorDark: '#1a472a',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // Function to generate menu HTML
         function generateMenuHtml() {
+            // Copy your existing menu.html content here and populate it with menuData
             return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -269,7 +348,143 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Green - Menu</title>
     <style>
-        /* Copy your menu.html styles here */
+        :root {
+            --primary-color: #1a472a;
+            --secondary-color: #2d8659;
+            --background-color: #f5f8f6;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+        }
+        
+        .menu-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .menu-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--primary-color);
+            color: white;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            padding: 12px 24px;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .tab-button:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .menu-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .menu-section.active {
+            display: block;
+        }
+
+        .menu-section h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: var(--background-color);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            transform: translateX(10px);
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .item-name {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .item-price {
+            color: var(--secondary-color);
+            font-weight: bold;
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .currency {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -313,45 +528,6 @@
     </script>
 </body>
 </html>`;
-        }
-
-        function saveChanges() {
-            const menuContent = generateMenuHtml();
-            const blob = new Blob([menuContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'menu.html';
-            a.click();
-        }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById(tabName + '-tab').style.display = 'block';
-            
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-        }
-
-        function generateQR() {
-            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
-            const menuUrl = baseUrl + '/menu.html';
-            
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
-            
-            new QRCode(qrContainer, {
-                text: menuUrl,
-                width: 256,
-                height: 256,
-                colorDark: '#1a472a',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
         }
 
         // Initialize the page
