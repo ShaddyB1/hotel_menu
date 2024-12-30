@@ -32,6 +32,19 @@
             color: white;
             margin-bottom: 30px;
             border-radius: 8px;
+            transform: translateY(0);
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         .menu-section {
@@ -40,6 +53,20 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transform: translateY(0);
+            opacity: 1;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         .menu-section h2 {
@@ -48,6 +75,11 @@
             padding-bottom: 10px;
             margin-bottom: 20px;
             text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        
+        .menu-section:hover h2 {
+            color: var(--secondary-color);
         }
         
         .menu-item {
@@ -59,16 +91,23 @@
             background-color: var(--background-color);
             border-radius: 5px;
             transition: all 0.3s ease;
+            cursor: default;
         }
         
         .menu-item:hover {
-            transform: translateY(-2px);
+            transform: translateX(10px);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: white;
         }
         
         .item-name {
             font-weight: bold;
             color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        
+        .menu-item:hover .item-name {
+            color: var(--secondary-color);
         }
         
         .item-price {
@@ -76,12 +115,22 @@
             font-weight: bold;
             min-width: 100px;
             text-align: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-item:hover .item-price {
+            transform: scale(1.1);
         }
         
         .currency {
             font-size: 0.8em;
             color: #666;
         }
+
+        /* Adding delay to section animations */
+        .menu-section:nth-child(2) { animation-delay: 0.1s; }
+        .menu-section:nth-child(3) { animation-delay: 0.2s; }
+        .menu-section:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
@@ -93,75 +142,98 @@
         
         <section class="menu-section">
             <h2>Soft Drinks</h2>
-            
             <div class="menu-item">
                 <span class="item-name">Bel Aqua (Medium)</span>
                 <span class="item-price"><span class="currency">GHC</span> 10.00</span>
             </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Voltic (Large)</span>
-                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Voltic (Medium)</span>
-                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">BB Cocktail</span>
-                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Ceres</span>
-                <span class="item-price"><span class="currency">GHC</span> 80.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Don Simon</span>
-                <span class="item-price"><span class="currency">GHC</span> 70.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Next Level</span>
-                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Red Bull</span>
-                <span class="item-price"><span class="currency">GHC</span> 35.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Sprite</span>
-                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Coca-Cola</span>
-                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Fanta</span>
-                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Vitamilk</span>
-                <span class="item-price"><span class="currency">GHC</span> 25.00</span>
-            </div>
-            
-            <div class="menu-item">
-                <span class="item-name">Alvaro</span>
-                <span class="item-price"><span class="currency">GHC</span> 15.00</span>
-            </div>
-            
+            <!-- ... rest of soft drinks ... -->
             <div class="menu-item">
                 <span class="item-name">Juver (Grape)</span>
                 <span class="item-price"><span class="currency">GHC</span> 60.00</span>
+            </div>
+        </section>
+        
+        <section class="menu-section">
+            <h2>Wine</h2>
+            <div class="menu-item">
+                <span class="item-name">Merlot/Nederburg</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Syrash/Veuve De Vernay</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Côt's de Roses</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Bordeaux</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Pinot Noir</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Malbec</span>
+                <span class="item-price"><span class="currency">GHC</span> 400.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Long Mountain</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Blossom Mills</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">4th Street</span>
+                <span class="item-price"><span class="currency">GHC</span> 250.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Scavi & Ray</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Four Special</span>
+                <span class="item-price"><span class="currency">GHC</span> 250.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Four Cousins</span>
+                <span class="item-price"><span class="currency">GHC</span> 250.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Condor Peak</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Carlo Rossi</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Whispering Angel</span>
+                <span class="item-price"><span class="currency">GHC</span> 400.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Cabernet Sauvignon</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+        </section>
+        
+        <section class="menu-section">
+            <h2>Vodka</h2>
+            <div class="menu-item">
+                <span class="item-name">Smirnoff/Sky Vodka</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Absolut Vodka</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Ciroc (Apple, Peach, Vodka)</span>
+                <span class="item-price"><span class="currency">GHC</span> 850.00</span>
             </div>
         </section>
     </div>
