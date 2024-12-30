@@ -17,38 +17,27 @@
             margin: 0;
             padding: 20px;
             background-color: var(--background-color);
+            color: #333;
         }
         
-        .container {
+        .layout {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr;
             gap: 20px;
         }
         
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .menu-section, .qr-section {
+        .section {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        h1, h2 {
+        h1, h2, h3 {
             color: var(--primary-color);
             margin-top: 0;
-        }
-        
-        .qr-section {
-            position: sticky;
-            top: 20px;
-            height: fit-content;
         }
         
         button {
@@ -67,112 +56,276 @@
             background-color: var(--primary-color);
         }
         
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--background-color);
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        .menu-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            padding: 6px 12px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
         #qrcode {
             margin: 20px 0;
             text-align: center;
             padding: 20px;
             background: white;
             border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        
+
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .instructions {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 4px;
             margin: 20px 0;
         }
-        
-        .instructions h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-        }
-        
-        .instructions ul {
-            margin: 0;
-            padding-left: 20px;
-            color: #444;
-        }
-
-        .instructions li {
-            margin-bottom: 8px;
-        }
-        
-        iframe {
-            width: 100%;
-            height: 700px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
-        }
-
-        .preview-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .hotel-title {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="menu-section">
-            <div class="hotel-title">
-                <h1>Hotel Green Menu Preview</h1>
-            </div>
-            <iframe id="menuPreview" src="menu.html" title="Menu Preview"></iframe>
-        </div>
-        
-        <div class="qr-section">
-            <h2>QR Code Generator</h2>
-            <div class="instructions">
-                <h3>How to Update Menu:</h3>
-                <ul>
-                    <li>Go to your GitHub repository</li>
-                    <li>Click on menu.html</li>
-                    <li>Click the pencil icon to edit</li>
-                    <li>Make your changes</li>
-                    <li>Click "Commit changes"</li>
-                    <li>Wait 1-2 minutes for changes to update</li>
-                    <li>Refresh this page to see changes</li>
-                </ul>
-            </div>
+    <div class="layout">
+        <div class="section">
+            <h1>Hotel Green Menu Manager</h1>
             
-            <button onclick="generateQR()">Generate New QR Code</button>
-            <div id="qrcode"></div>
-            
-            <div class="instructions">
-                <h3>To Save QR Code:</h3>
-                <ul>
-                    <li>Right-click on the QR code</li>
-                    <li>Select "Save image as..."</li>
-                    <li>Choose save location</li>
-                    <li>Print and display the QR code for your guests</li>
-                </ul>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" onclick="showTab('editor')">Menu Editor</button>
+                    <button class="tab-button" onclick="showTab('qr')">QR Code</button>
+                </div>
+
+                <div id="editor-tab" class="tab-content active">
+                    <div class="form-group">
+                        <h3>Add New Section</h3>
+                        <input type="text" id="sectionName" placeholder="Section Name">
+                        <button onclick="addSection()">Add Section</button>
+                    </div>
+
+                    <div class="form-group">
+                        <h3>Add New Item</h3>
+                        <select id="sectionSelect"></select>
+                        <input type="text" id="itemName" placeholder="Item Name">
+                        <input type="number" id="itemPrice" placeholder="Price (GHC)">
+                        <button onclick="addItem()">Add Item</button>
+                    </div>
+
+                    <div id="menuPreview"></div>
+                    
+                    <button onclick="saveMenu()">Save Menu</button>
+                </div>
+
+                <div id="qr-tab" class="tab-content">
+                    <div class="instructions">
+                        <h3>QR Code for Menu</h3>
+                        <p>Scan this code to view the menu on any device.</p>
+                    </div>
+                    <button onclick="generateQR()">Generate New QR Code</button>
+                    <div id="qrcode"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let qr = null;
-        
+        let menuData = {
+            sections: [
+                {
+                    name: "Soft Drinks",
+                    items: [
+                        { name: "Bel Aqua (Medium)", price: "10.00" },
+                        { name: "Voltic (Large)", price: "20.00" }
+                        // ... add your existing items here
+                    ]
+                }
+                // ... add your existing sections here
+            ]
+        };
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function updateSectionSelect() {
+            const select = document.getElementById('sectionSelect');
+            select.innerHTML = menuData.sections.map((section, index) =>
+                `<option value="${index}">${section.name}</option>`
+            ).join('');
+        }
+
+        function addSection() {
+            const name = document.getElementById('sectionName').value.trim();
+            if (!name) return;
+
+            menuData.sections.push({
+                name: name,
+                items: []
+            });
+
+            document.getElementById('sectionName').value = '';
+            updateSectionSelect();
+            renderMenu();
+        }
+
+        function addItem() {
+            const sectionIndex = document.getElementById('sectionSelect').value;
+            const name = document.getElementById('itemName').value.trim();
+            const price = document.getElementById('itemPrice').value;
+
+            if (!name || !price) return;
+
+            menuData.sections[sectionIndex].items.push({
+                name: name,
+                price: price
+            });
+
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemPrice').value = '';
+            renderMenu();
+        }
+
+        function deleteItem(sectionIndex, itemIndex) {
+            menuData.sections[sectionIndex].items.splice(itemIndex, 1);
+            renderMenu();
+        }
+
+        function deleteSection(sectionIndex) {
+            menuData.sections.splice(sectionIndex, 1);
+            updateSectionSelect();
+            renderMenu();
+        }
+
+        function renderMenu() {
+            const preview = document.getElementById('menuPreview');
+            preview.innerHTML = menuData.sections.map((section, sectionIndex) => `
+                <div class="menu-section">
+                    <h3>
+                        ${section.name}
+                        <button class="delete-btn" onclick="deleteSection(${sectionIndex})">Delete Section</button>
+                    </h3>
+                    ${section.items.map((item, itemIndex) => `
+                        <div class="menu-item">
+                            <span>${item.name}</span>
+                            <span>
+                                GHC ${item.price}
+                                <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function saveMenu() {
+            // Generate menu.html content
+            const menuContent = generateMenuHtml();
+            
+            // Create downloadable file
+            const blob = new Blob([menuContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'menu.html';
+            a.click();
+        }
+
+        function generateMenuHtml() {
+            // Get the content from your existing menu.html file
+            // but replace the menu items with the current menuData
+            return `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Hotel Green - Menu</title>
+                <!-- Copy your existing menu.html styles here -->
+            </head>
+            <body>
+                <!-- Generate menu HTML based on menuData -->
+            </body>
+            </html>`;
+        }
+
         function generateQR() {
-            // Get the base URL without any file name
             const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
             const menuUrl = baseUrl + '/menu.html';
             
-            // Clear previous QR code if it exists
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
             
-            // Generate new QR code
-            qr = new QRCode(qrContainer, {
+            new QRCode(qrContainer, {
                 text: menuUrl,
                 width: 256,
                 height: 256,
@@ -181,9 +334,10 @@
                 correctLevel: QRCode.CorrectLevel.H
             });
         }
-        
-        // Generate QR code on page load
-        window.onload = generateQR;
+
+        // Initialize the page
+        updateSectionSelect();
+        renderMenu();
     </script>
 </body>
 </html>
