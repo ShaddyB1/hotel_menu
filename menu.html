@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Green - Menu Manager</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Hotel Green - Menu</title>
     <style>
         :root {
             --primary-color: #1a472a;
@@ -14,144 +13,154 @@
         
         body {
             font-family: 'Arial', sans-serif;
+            line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: var(--background-color);
         }
         
-        .container {
-            max-width: 1200px;
+        .menu-container {
+            max-width: 800px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            padding: 20px;
         }
         
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
+        .menu-header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: var(--primary-color);
+            color: white;
+            margin-bottom: 30px;
         }
         
-        .menu-section, .qr-section {
+        .menu-section {
+            margin-bottom: 40px;
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        h1, h2 {
+        .menu-section h2 {
             color: var(--primary-color);
-            margin-top: 0;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
         }
         
-        .qr-section {
-            position: sticky;
-            top: 20px;
-            height: fit-content;
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
         
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px 0;
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
-        button:hover {
-            background-color: var(--primary-color);
-        }
-        
-        #qrcode {
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .instructions {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        
-        .instructions h3 {
-            margin-top: 0;
+        .item-name {
+            font-weight: bold;
             color: var(--primary-color);
         }
         
-        .instructions ul {
-            margin: 0;
-            padding-left: 20px;
+        .item-price {
+            color: var(--secondary-color);
+            font-weight: bold;
         }
         
-        iframe {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .currency {
+            font-size: 0.8em;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="menu-section">
-            <h1>Hotel Green Menu Preview</h1>
-            <iframe id="menuPreview" src="menu.html"></iframe>
-        </div>
+    <div class="menu-container">
+        <header class="menu-header">
+            <h1>Hotel Green</h1>
+            <h2 style="margin-top: 10px; font-weight: normal; font-size: 1.5em;">Drinks Menu</h2>
+        </header>
         
-        <div class="qr-section">
-            <h2>QR Code Generator</h2>
-            <div class="instructions">
-                <h3>How to Update Menu:</h3>
-                <ul>
-                    <li>Edit menu.html file</li>
-                    <li>Upload changes</li>
-                    <li>Click "Generate New QR Code"</li>
-                    <li>Download the new QR code</li>
-                </ul>
+        <section class="menu-section">
+            <h2>Soft Drinks</h2>
+            
+            <div class="menu-item">
+                <span class="item-name">Bel Aqua (Medium)</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
             </div>
             
-            <button onclick="generateQR()">Generate New QR Code</button>
-            <div id="qrcode"></div>
-            
-            <div class="instructions">
-                <h3>To Save QR Code:</h3>
-                <ul>
-                    <li>Right-click on the QR code</li>
-                    <li>Select "Save image as..."</li>
-                    <li>Choose save location</li>
-                </ul>
+            <div class="menu-item">
+                <span class="item-name">Voltic (Large)</span>
+                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
             </div>
-        </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Voltic (Medium)</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">BB Cocktail</span>
+                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Ceres</span>
+                <span class="item-price"><span class="currency">GHC</span> 80.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Don Simon</span>
+                <span class="item-price"><span class="currency">GHC</span> 70.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Next Level</span>
+                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Red Bull</span>
+                <span class="item-price"><span class="currency">GHC</span> 35.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Sprite</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Coca-Cola</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Fanta</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Vitamilk</span>
+                <span class="item-price"><span class="currency">GHC</span> 25.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Alvaro</span>
+                <span class="item-price"><span class="currency">GHC</span> 15.00</span>
+            </div>
+            
+            <div class="menu-item">
+                <span class="item-name">Juver (Grape)</span>
+                <span class="item-price"><span class="currency">GHC</span> 60.00</span>
+            </div>
+        </section>
     </div>
-
-    <script>
-        let qr = null;
-        
-        function generateQR() {
-            const menuUrl = window.location.href.replace('index.html', 'menu.html');
-            
-            // Clear previous QR code if it exists
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
-            
-            // Generate new QR code
-            qr = new QRCode(qrContainer, {
-                text: menuUrl,
-                width: 256,
-                height: 256,
-                colorDark: '#1a472a',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-        
-        // Generate QR code on page load
-        window.onload = generateQR;
-    </script>
 </body>
 </html>
