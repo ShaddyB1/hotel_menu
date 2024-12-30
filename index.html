@@ -39,7 +39,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
+
         h1, h2 {
             color: var(--primary-color);
             margin-top: 0;
@@ -55,11 +55,12 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
             margin: 10px 0;
+            transition: background-color 0.3s ease;
         }
         
         button:hover {
@@ -69,6 +70,10 @@
         #qrcode {
             margin: 20px 0;
             text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .instructions {
@@ -86,21 +91,42 @@
         .instructions ul {
             margin: 0;
             padding-left: 20px;
+            color: #444;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
         }
         
         iframe {
             width: 100%;
-            height: 600px;
+            height: 700px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            background: white;
+        }
+
+        .preview-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .hotel-title {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="menu-section">
-            <h1>Hotel Green Menu Preview</h1>
-            <iframe id="menuPreview" src="menu.html"></iframe>
+            <div class="hotel-title">
+                <h1>Hotel Green Menu Preview</h1>
+            </div>
+            <iframe id="menuPreview" src="menu.html" title="Menu Preview"></iframe>
         </div>
         
         <div class="qr-section">
@@ -108,10 +134,13 @@
             <div class="instructions">
                 <h3>How to Update Menu:</h3>
                 <ul>
-                    <li>Edit menu.html file</li>
-                    <li>Upload changes</li>
-                    <li>Click "Generate New QR Code"</li>
-                    <li>Download the new QR code</li>
+                    <li>Go to your GitHub repository</li>
+                    <li>Click on menu.html</li>
+                    <li>Click the pencil icon to edit</li>
+                    <li>Make your changes</li>
+                    <li>Click "Commit changes"</li>
+                    <li>Wait 1-2 minutes for changes to update</li>
+                    <li>Refresh this page to see changes</li>
                 </ul>
             </div>
             
@@ -124,6 +153,7 @@
                     <li>Right-click on the QR code</li>
                     <li>Select "Save image as..."</li>
                     <li>Choose save location</li>
+                    <li>Print and display the QR code for your guests</li>
                 </ul>
             </div>
         </div>
