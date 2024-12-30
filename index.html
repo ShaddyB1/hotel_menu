@@ -1,349 +1,4 @@
-<!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Green - Menu Manager</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #1a472a;
-            --secondary-color: #2d8659;
-            --background-color: #f5f8f6;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: var(--background-color);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .heading {
-            color: var(--primary-color);
-            margin-bottom: 30px;
-        }
-
-        .tabs {
-            margin-bottom: 30px;
-        }
-
-        .tab-button {
-            padding: 12px 24px;
-            background: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            cursor: pointer;
-            margin-right: 10px;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .tab-button:hover {
-            background: var(--secondary-color);
-            color: white;
-        }
-
-        .tab-button.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .section h2 {
-            color: var(--primary-color);
-            margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            margin: 10px 0;
-            background: var(--background-color);
-            border-radius: 6px;
-            gap: 15px;
-        }
-
-        .menu-item input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 15px;
-        }
-
-        .menu-item input[type="text"] {
-            flex-grow: 1;
-        }
-
-        .menu-item input[type="number"] {
-            width: 120px;
-        }
-
-        button {
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background: var(--primary-color);
-        }
-
-        .save-btn {
-            background: #28a745;
-            padding: 12px 30px;
-            font-size: 16px;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-            padding: 8px 16px;
-        }
-
-        .delete-btn:hover {
-            background: #c82333;
-        }
-
-        #qrcode {
-            margin: 20px 0;
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .sticky-save {
-            position: sticky;
-            bottom: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: #28a745;
-            color: white;
-            border-radius: 4px;
-            display: none;
-            animation: slideIn 0.3s ease-out;
-            z-index: 1000;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-
-        .error {
-            background-color: #dc3545;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="heading">Hotel Green Menu Manager</h1>
-
-        <div class="tabs">
-            <button class="tab-button active" onclick="showTab('editor')">Menu Editor</button>
-            <button class="tab-button" onclick="showTab('qr')">QR Code</button>
-        </div>
-
-        <div id="editor" class="tab-content active">
-            <div id="menuEditor"></div>
-            <div class="sticky-save">
-                <button onclick="saveChanges()" class="save-btn">Save All Changes</button>
-            </div>
-        </div>
-
-        <div id="qr" class="tab-content">
-            <div class="section">
-                <h2>Menu QR Code</h2>
-                <p>Generate a QR code that links to your menu. Customers can scan this to view the menu on their phones.</p>
-                <button onclick="generateQR()">Generate New QR Code</button>
-                <div id="qrcode"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast" class="toast"></div>
-
-    <script>
-        let menuData = {
-            sections: [
-                {
-                    id: 'softDrinks',
-                    name: 'Soft Drinks',
-                    items: [
-                        { name: 'Bel Aqua (Medium)', price: '10.00' },
-                        { name: 'Voltic (Large)', price: '20.00' },
-                        { name: 'Voltic (Medium)', price: '10.00' },
-                        { name: 'BB Cocktail', price: '20.00' },
-                        { name: 'Ceres', price: '80.00' },
-                        { name: 'Don Simon', price: '70.00' },
-                        { name: 'Next Level', price: '20.00' },
-                        { name: 'Red Bull', price: '35.00' },
-                        { name: 'Sprite', price: '10.00' },
-                        { name: 'Coca-Cola', price: '10.00' },
-                        { name: 'Fanta', price: '10.00' },
-                        { name: 'Vitamilk', price: '25.00' },
-                        { name: 'Alvaro', price: '15.00' },
-                        { name: 'Juver (Grape)', price: '60.00' }
-                    ]
-                },
-                {
-                    id: 'wine',
-                    name: 'Wine',
-                    items: [
-                        { name: 'Merlot/Nederburg', price: '350.00' },
-                        { name: 'Syrash/Veuve De Vernay', price: '350.00' },
-                        { name: "Côt's de Roses", price: '300.00' },
-                        { name: 'Bordeaux', price: '300.00' },
-                        { name: 'Pinot Noir', price: '300.00' },
-                        { name: 'Malbec', price: '400.00' },
-                        { name: 'Long Mountain', price: '300.00' },
-                        { name: 'Blossom Mills', price: '300.00' },
-                        { name: '4th Street', price: '250.00' },
-                        { name: 'Scavi & Ray', price: '300.00' },
-                        { name: 'Four Special', price: '250.00' },
-                        { name: 'Four Cousins', price: '250.00' },
-                        { name: 'Condor Peak', price: '300.00' },
-                        { name: 'Carlo Rossi', price: '300.00' },
-                        { name: 'Whispering Angel', price: '400.00' },
-                        { name: 'Cabernet Sauvignon', price: '300.00' }
-                    ]
-                },
-                {
-                    id: 'vodka',
-                    name: 'Vodka',
-                    items: [
-                        { name: 'Smirnoff/Sky Vodka', price: '350.00' },
-                        { name: 'Absolut Vodka', price: '350.00' },
-                        { name: 'Ciroc (Apple, Peach, Vodka)', price: '850.00' }
-                    ]
-                }
-            ]
-        };
-
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            if (!toast) return;
-            
-            toast.textContent = message;
-            toast.className = 'toast' + (isError ? ' error' : '');
-            toast.style.display = 'block';
-            
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
-        function validatePrice(price) {
-            const number = parseFloat(price);
-            return !isNaN(number) && number >= 0;
-        }
-
-        function renderMenu() {
-            try {
-                const editor = document.getElementById('menuEditor');
-                if (!editor) throw new Error('Editor element not found');
-                
-                editor.innerHTML = menuData.sections.map((section, sectionIndex) => `
-                    <div class="section">
-                        <h2>${section.name}</h2>
-                        ${section.items.map((item, itemIndex) => `
-                            <div class="menu-item">
-                                <input type="text" value="${item.name}" 
-                                    onchange="updateItem(${sectionIndex}, ${itemIndex}, 'name', this.value)">
-                                <input type="number" step="0.01" min="0" value="${item.price}" 
-                                    onchange="updateItem(${sectionIndex}, ${itemIndex}, 'price', this.value)">
-                                <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
-                            </div>
-                        `).join('')}
-                        <button onclick="addItem(${sectionIndex})">Add New Item</button>
-                    </div>
-                `).join('');
-            } catch (error) {
-                showToast('Error rendering menu: ' + error.message, true);
-            }
-        }
-
-        function updateItem(sectionIndex, itemIndex, field, value) {
-            try {
-                if (field === 'price' && !validatePrice(value)) {
-                    throw new Error('Invalid price value');
-                }
-                if (field === 'name' && !value.trim()) {
-                    throw new Error('Name cannot be empty');
-                }
-                menuData.sections[sectionIndex].items[itemIndex][field] = value;
-            } catch (error) {
-                showToast(error.message, true);
-            }
-        }
-
-        function deleteItem(sectionIndex, itemIndex) {
-            try {
-                menuData.sections[sectionIndex].items.splice(itemIndex, 1);
-                renderMenu();
-                showToast('Item deleted successfully');
-            } catch (error) {
-                showToast('Error deleting item: ' + error.message, true);
-            }
-        }
-
-        function addItem(sectionIndex) {
-            try {
-                menuData.sections[sectionIndex].items.push({
-                    name: 'New Item',
-                    price: '0.00'
-                });
-                renderMenu();
-                showToast('New item added');
-            } catch (error) {
-                showToast('Error adding item: ' + error.message, true);
-            }
-        }
-
-        function generateMenuHtml() {
-            return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -467,13 +122,25 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -485,99 +152,174 @@
         </header>
         
         <nav class="tab-navigation">
-            ${menuData.sections.map((section, index) => `
-                <button class="tab-button ${index === 0 ? 'active' : ''}" 
-                    onclick="showSection('${section.id}')">${section.name}</button>
-            `).join('')}
+            <button class="tab-button active" onclick="showSection('softDrinks')">Soft Drinks</button>
+            <button class="tab-button" onclick="showSection('wine')">Wine</button>
+            <button class="tab-button" onclick="showSection('vodka')">Vodka</button>
         </nav>
         
-        ${menuData.sections.map((section, index) => `
-            <section id="${section.id}" class="menu-section ${index === 0 ? 'active' : ''}">
-                <h2>${section.name}</h2>
-                ${section.items.map(item => `
-                    <div class="menu-item">
-                        <span class="item-name">${item.name}</span>
-                        <span class="item-price"><span class="currency">GHC</span> ${parseFloat(item.price).toFixed(2)}</span>
-                    </div>
-                `).join('')}
-            </section>
-        `).join('')}
+        <section id="softDrinks" class="menu-section active">
+            <h2>Soft Drinks</h2>
+            <div class="menu-item">
+                <span class="item-name">Bel Aqua (Medium)</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Voltic (Large)</span>
+                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Voltic (Medium)</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">BB Cocktail</span>
+                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Ceres</span>
+                <span class="item-price"><span class="currency">GHC</span> 80.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Don Simon</span>
+                <span class="item-price"><span class="currency">GHC</span> 70.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Next Level</span>
+                <span class="item-price"><span class="currency">GHC</span> 20.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Red Bull</span>
+                <span class="item-price"><span class="currency">GHC</span> 35.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Sprite</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Coca-Cola</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Fanta</span>
+                <span class="item-price"><span class="currency">GHC</span> 10.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Vitamilk</span>
+                <span class="item-price"><span class="currency">GHC</span> 25.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Alvaro</span>
+                <span class="item-price"><span class="currency">GHC</span> 15.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Juver (Grape)</span>
+                <span class="item-price"><span class="currency">GHC</span> 60.00</span>
+            </div>
+        </section>
+        
+        <section id="wine" class="menu-section">
+            <h2>Wine</h2>
+            <div class="menu-item">
+                <span class="item-name">Merlot/Nederburg</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Syrash/Veuve De Vernay</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Côt's de Roses</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Bordeaux</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Pinot Noir</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Malbec</span>
+                <span class="item-price"><span class="currency">GHC</span> 400.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Long Mountain</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Blossom Mills</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">4th Street</span>
+                <span class="item-price"><span class="currency">GHC</span> 250.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Scavi & Ray</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Four Special</span>
+                <span class="item-price"><span class="currency">GHC</span> 250.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Four Cousins</span>
+                <span class="item-price"><span class="currency">GHC</span> 250.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Condor Peak</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Carlo Rossi</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Whispering Angel</span>
+                <span class="item-price"><span class="currency">GHC</span> 400.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Cabernet Sauvignon</span>
+                <span class="item-price"><span class="currency">GHC</span> 300.00</span>
+            </div>
+        </section>
+        
+        <section id="vodka" class="menu-section">
+            <h2>Vodka</h2>
+            <div class="menu-item">
+                <span class="item-name">Smirnoff/Sky Vodka</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Absolut Vodka</span>
+                <span class="item-price"><span class="currency">GHC</span> 350.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="item-name">Ciroc (Apple, Peach, Vodka)</span>
+                <span class="item-price"><span class="currency">GHC</span> 850.00</span>
+            </div>
+        </section>
     </div>
 
     <script>
         function showSection(sectionId) {
+            // Hide all sections
             document.querySelectorAll('.menu-section').forEach(section => {
                 section.classList.remove('active');
             });
+            
+            // Remove active class from all buttons
             document.querySelectorAll('.tab-button').forEach(button => {
                 button.classList.remove('active');
             });
+            
+            // Show selected section
             document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
             event.target.classList.add('active');
         }
-    </script>
-</body>
-</html>`;
-        }
-
-        function saveChanges() {
-            try {
-                const menuContent = generateMenuHtml();
-                const blob = new Blob([menuContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'menu.html';
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('Menu saved successfully!');
-            } catch (error) {
-                showToast('Error saving menu: ' + error.message, true);
-            }
-        }
-
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-        }
-
-        function generateQR() {
-            try {
-                const qrContainer = document.getElementById('qrcode');
-                qrContainer.innerHTML = '';
-                
-                // Use a fallback URL if window.location is not available
-                const menuUrl = window.location.href.split('/').slice(0, -1).join('/') + '/menu.html';
-                
-                new QRCode(qrContainer, {
-                    text: menuUrl,
-                    width: 256,
-                    height: 256,
-                    colorDark: '#1a472a',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-                
-                showToast('QR Code generated successfully!');
-            } catch (error) {
-                showToast('Error generating QR code: ' + error.message, true);
-            }
-        }
-
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                renderMenu();
-            } catch (error) {
-                showToast('Error initializing page: ' + error.message, true);
-            }
-        });
     </script>
 </body>
 </html>
