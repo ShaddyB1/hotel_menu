@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,6 +153,28 @@
             text-align: center;
             margin-top: 30px;
         }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #28a745;
+            color: white;
+            border-radius: 4px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .error {
+            background-color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -180,8 +203,9 @@
         </div>
     </div>
 
+    <div id="toast" class="toast"></div>
+
     <script>
-        // Menu data
         let menuData = {
             sections: [
                 {
@@ -238,90 +262,86 @@
             ]
         };
 
-        // Render menu editor
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function validatePrice(price) {
+            const number = parseFloat(price);
+            return !isNaN(number) && number >= 0;
+        }
+
         function renderMenu() {
-            const editor = document.getElementById('menuEditor');
-            editor.innerHTML = menuData.sections.map((section, sectionIndex) => `
-                <div class="section">
-                    <h2>${section.name}</h2>
-                    ${section.items.map((item, itemIndex) => `
-                        <div class="menu-item">
-                            <input type="text" value="${item.name}" 
-                                onchange="updateItem(${sectionIndex}, ${itemIndex}, 'name', this.value)">
-                            <input type="number" step="0.01" min="0" value="${item.price}" 
-                                onchange="updateItem(${sectionIndex}, ${itemIndex}, 'price', this.value)">
-                            <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
-                        </div>
-                    `).join('')}
-                    <button onclick="addItem(${sectionIndex})">Add New Item</button>
-                </div>
-            `).join('');
+            try {
+                const editor = document.getElementById('menuEditor');
+                if (!editor) throw new Error('Editor element not found');
+                
+                editor.innerHTML = menuData.sections.map((section, sectionIndex) => `
+                    <div class="section">
+                        <h2>${section.name}</h2>
+                        ${section.items.map((item, itemIndex) => `
+                            <div class="menu-item">
+                                <input type="text" value="${item.name}" 
+                                    onchange="updateItem(${sectionIndex}, ${itemIndex}, 'name', this.value)">
+                                <input type="number" step="0.01" min="0" value="${item.price}" 
+                                    onchange="updateItem(${sectionIndex}, ${itemIndex}, 'price', this.value)">
+                                <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
+                            </div>
+                        `).join('')}
+                        <button onclick="addItem(${sectionIndex})">Add New Item</button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('Error rendering menu: ' + error.message, true);
+            }
         }
 
-        // Update item
         function updateItem(sectionIndex, itemIndex, field, value) {
-            menuData.sections[sectionIndex].items[itemIndex][field] = value;
+            try {
+                if (field === 'price' && !validatePrice(value)) {
+                    throw new Error('Invalid price value');
+                }
+                if (field === 'name' && !value.trim()) {
+                    throw new Error('Name cannot be empty');
+                }
+                menuData.sections[sectionIndex].items[itemIndex][field] = value;
+            } catch (error) {
+                showToast(error.message, true);
+            }
         }
 
-        // Delete item
         function deleteItem(sectionIndex, itemIndex) {
-            menuData.sections[sectionIndex].items.splice(itemIndex, 1);
-            renderMenu();
+            try {
+                menuData.sections[sectionIndex].items.splice(itemIndex, 1);
+                renderMenu();
+                showToast('Item deleted successfully');
+            } catch (error) {
+                showToast('Error deleting item: ' + error.message, true);
+            }
         }
 
-        // Add new item
         function addItem(sectionIndex) {
-            menuData.sections[sectionIndex].items.push({
-                name: 'New Item',
-                price: '0.00'
-            });
-            renderMenu();
+            try {
+                menuData.sections[sectionIndex].items.push({
+                    name: 'New Item',
+                    price: '0.00'
+                });
+                renderMenu();
+                showToast('New item added');
+            } catch (error) {
+                showToast('Error adding item: ' + error.message, true);
+            }
         }
 
-        // Save changes
-        function saveChanges() {
-            // Generate menu.html content
-            const menuContent = generateMenuHtml();
-            const blob = new Blob([menuContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'menu.html';
-            a.click();
-        }
-
-        // Show/hide tabs
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-        }
-
-        // Generate QR code
-        function generateQR() {
-            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
-            const menuUrl = baseUrl + '/menu.html';
-            
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
-            
-            new QRCode(qrContainer, {
-                text: menuUrl,
-                width: 256,
-                height: 256,
-                colorDark: '#1a472a',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-
-        // Generate menu HTML
         function generateMenuHtml() {
             return `<!DOCTYPE html>
 <html lang="en">
@@ -447,25 +467,13 @@
         }
         
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes slideDown {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
@@ -489,7 +497,7 @@
                 ${section.items.map(item => `
                     <div class="menu-item">
                         <span class="item-name">${item.name}</span>
-                        <span class="item-price"><span class="currency">GHC</span> ${item.price}</span>
+                        <span class="item-price"><span class="currency">GHC</span> ${parseFloat(item.price).toFixed(2)}</span>
                     </div>
                 `).join('')}
             </section>
@@ -512,8 +520,64 @@
 </html>`;
         }
 
+        function saveChanges() {
+            try {
+                const menuContent = generateMenuHtml();
+                const blob = new Blob([menuContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'menu.html';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Menu saved successfully!');
+            } catch (error) {
+                showToast('Error saving menu: ' + error.message, true);
+            }
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function generateQR() {
+            try {
+                const qrContainer = document.getElementById('qrcode');
+                qrContainer.innerHTML = '';
+                
+                // Use a fallback URL if window.location is not available
+                const menuUrl = window.location.href.split('/').slice(0, -1).join('/') + '/menu.html';
+                
+                new QRCode(qrContainer, {
+                    text: menuUrl,
+                    width: 256,
+                    height: 256,
+                    colorDark: '#1a472a',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                showToast('QR Code generated successfully!');
+            } catch (error) {
+                showToast('Error generating QR code: ' + error.message, true);
+            }
+        }
+
         // Initialize the page
-        renderMenu();
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                renderMenu();
+            } catch (error) {
+                showToast('Error initializing page: ' + error.message, true);
+            }
+        });
     </script>
 </body>
 </html>
