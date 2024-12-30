@@ -17,102 +17,84 @@
             margin: 0;
             padding: 20px;
             background-color: var(--background-color);
-            color: #333;
         }
         
-        .layout {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+            padding: 20px;
         }
-        
+
         .section {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
-        h1, h2, h3 {
+        h1, h2 {
             color: var(--primary-color);
             margin-top: 0;
         }
-        
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
+
+        .menu-section {
+            background: white;
+            padding: 15px;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
             margin: 10px 0;
-            transition: background-color 0.3s ease;
-        }
-        
-        button:hover {
-            background-color: var(--primary-color);
-        }
-        
-        input, select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            margin: 5px 0;
         }
 
         .menu-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 10px;
             background-color: var(--background-color);
             border-radius: 4px;
             margin: 5px 0;
+            gap: 10px;
         }
 
-        .menu-section {
-            margin: 20px 0;
-            padding: 15px;
+        .menu-item input {
+            padding: 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            font-size: 14px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        .menu-item input[type="number"] {
+            width: 100px;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--primary-color);
+        .menu-item input[type="text"] {
+            flex-grow: 1;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-color);
         }
 
         .delete-btn {
             background-color: #dc3545;
-            padding: 6px 12px;
+            padding: 5px 10px;
         }
 
-        .delete-btn:hover {
-            background-color: #c82333;
+        .add-btn {
+            background-color: var(--secondary-color);
+            margin: 10px 0;
         }
 
-        #qrcode {
-            margin: 20px 0;
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 4px;
-        }
-
-        .tab-container {
-            margin-bottom: 20px;
-        }
-
-        .tab-buttons {
+        .tab-navigation {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
@@ -123,6 +105,7 @@
             border: none;
             background-color: #ddd;
             cursor: pointer;
+            border-radius: 4px;
         }
 
         .tab-button.active {
@@ -130,62 +113,58 @@
             color: white;
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+        #qrcode {
+            margin: 20px 0;
+            text-align: center;
         }
 
         .instructions {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 4px;
-            margin: 20px 0;
+            margin: 10px 0;
+        }
+
+        .save-section {
+            position: sticky;
+            bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .save-btn {
+            background-color: #28a745;
+            font-size: 16px;
+            padding: 12px 30px;
         }
     </style>
 </head>
 <body>
-    <div class="layout">
-        <div class="section">
-            <h1>Hotel Green Menu Manager</h1>
-            
-            <div class="tab-container">
-                <div class="tab-buttons">
-                    <button class="tab-button active" onclick="showTab('editor')">Menu Editor</button>
-                    <button class="tab-button" onclick="showTab('qr')">QR Code</button>
-                </div>
+    <div class="container">
+        <h1>Hotel Green Menu Manager</h1>
 
-                <div id="editor-tab" class="tab-content active">
-                    <div class="form-group">
-                        <h3>Add New Section</h3>
-                        <input type="text" id="sectionName" placeholder="Section Name">
-                        <button onclick="addSection()">Add Section</button>
-                    </div>
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('editor')">Menu Editor</button>
+            <button class="tab-button" onclick="showTab('qr')">QR Code</button>
+        </div>
 
-                    <div class="form-group">
-                        <h3>Add New Item</h3>
-                        <select id="sectionSelect"></select>
-                        <input type="text" id="itemName" placeholder="Item Name">
-                        <input type="number" id="itemPrice" placeholder="Price (GHC)">
-                        <button onclick="addItem()">Add Item</button>
-                    </div>
-
-                    <div id="menuPreview"></div>
-                    
-                    <button onclick="saveMenu()">Save Menu</button>
-                </div>
-
-                <div id="qr-tab" class="tab-content">
-                    <div class="instructions">
-                        <h3>QR Code for Menu</h3>
-                        <p>Scan this code to view the menu on any device.</p>
-                    </div>
-                    <button onclick="generateQR()">Generate New QR Code</button>
-                    <div id="qrcode"></div>
-                </div>
+        <div id="editor-tab" class="section">
+            <div id="menuEditor">
+                <!-- Menu sections will be populated here -->
             </div>
+
+            <div class="save-section">
+                <button onclick="saveChanges()" class="save-btn">Save All Changes</button>
+            </div>
+        </div>
+
+        <div id="qr-tab" class="section" style="display: none;">
+            <button onclick="generateQR()">Generate QR Code</button>
+            <div id="qrcode"></div>
         </div>
     </div>
 
@@ -193,67 +172,80 @@
         let menuData = {
             sections: [
                 {
-                    name: "Soft Drinks",
+                    id: 'softDrinks',
+                    name: 'Soft Drinks',
                     items: [
-                        { name: "Bel Aqua (Medium)", price: "10.00" },
-                        { name: "Voltic (Large)", price: "20.00" }
-                        // ... add your existing items here
+                        { name: 'Bel Aqua (Medium)', price: '10.00' },
+                        { name: 'Voltic (Large)', price: '20.00' },
+                        { name: 'Voltic (Medium)', price: '10.00' },
+                        { name: 'BB Cocktail', price: '20.00' },
+                        { name: 'Ceres', price: '80.00' },
+                        { name: 'Don Simon', price: '70.00' },
+                        { name: 'Next Level', price: '20.00' },
+                        { name: 'Red Bull', price: '35.00' },
+                        { name: 'Sprite', price: '10.00' },
+                        { name: 'Coca-Cola', price: '10.00' },
+                        { name: 'Fanta', price: '10.00' },
+                        { name: 'Vitamilk', price: '25.00' },
+                        { name: 'Alvaro', price: '15.00' },
+                        { name: 'Juver (Grape)', price: '60.00' }
+                    ]
+                },
+                {
+                    id: 'wine',
+                    name: 'Wine',
+                    items: [
+                        { name: 'Merlot/Nederburg', price: '350.00' },
+                        { name: 'Syrash/Veuve De Vernay', price: '350.00' },
+                        { name: "Côt's de Roses", price: '300.00' },
+                        { name: 'Bordeaux', price: '300.00' },
+                        { name: 'Pinot Noir', price: '300.00' },
+                        { name: 'Malbec', price: '400.00' },
+                        { name: 'Long Mountain', price: '300.00' },
+                        { name: 'Blossom Mills', price: '300.00' },
+                        { name: '4th Street', price: '250.00' },
+                        { name: 'Scavi & Ray', price: '300.00' },
+                        { name: 'Four Special', price: '250.00' },
+                        { name: 'Four Cousins', price: '250.00' },
+                        { name: 'Condor Peak', price: '300.00' },
+                        { name: 'Carlo Rossi', price: '300.00' },
+                        { name: 'Whispering Angel', price: '400.00' },
+                        { name: 'Cabernet Sauvignon', price: '300.00' }
+                    ]
+                },
+                {
+                    id: 'vodka',
+                    name: 'Vodka',
+                    items: [
+                        { name: 'Smirnoff/Sky Vodka', price: '350.00' },
+                        { name: 'Absolut Vodka', price: '350.00' },
+                        { name: 'Ciroc (Apple, Peach, Vodka)', price: '850.00' }
                     ]
                 }
-                // ... add your existing sections here
             ]
         };
 
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-
-            // Show selected tab
-            document.getElementById(tabName + '-tab').classList.add('active');
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+        function renderMenu() {
+            const editor = document.getElementById('menuEditor');
+            editor.innerHTML = menuData.sections.map((section, sectionIndex) => `
+                <div class="menu-section">
+                    <h2>${section.name}</h2>
+                    ${section.items.map((item, itemIndex) => `
+                        <div class="menu-item">
+                            <input type="text" value="${item.name}" 
+                                onchange="updateItem(${sectionIndex}, ${itemIndex}, 'name', this.value)">
+                            <input type="number" step="0.01" value="${item.price}" 
+                                onchange="updateItem(${sectionIndex}, ${itemIndex}, 'price', this.value)">
+                            <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
+                        </div>
+                    `).join('')}
+                    <button class="add-btn" onclick="addItem(${sectionIndex})">Add Item</button>
+                </div>
+            `).join('');
         }
 
-        function updateSectionSelect() {
-            const select = document.getElementById('sectionSelect');
-            select.innerHTML = menuData.sections.map((section, index) =>
-                `<option value="${index}">${section.name}</option>`
-            ).join('');
-        }
-
-        function addSection() {
-            const name = document.getElementById('sectionName').value.trim();
-            if (!name) return;
-
-            menuData.sections.push({
-                name: name,
-                items: []
-            });
-
-            document.getElementById('sectionName').value = '';
-            updateSectionSelect();
-            renderMenu();
-        }
-
-        function addItem() {
-            const sectionIndex = document.getElementById('sectionSelect').value;
-            const name = document.getElementById('itemName').value.trim();
-            const price = document.getElementById('itemPrice').value;
-
-            if (!name || !price) return;
-
-            menuData.sections[sectionIndex].items.push({
-                name: name,
-                price: price
-            });
-
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemPrice').value = '';
-            renderMenu();
+        function updateItem(sectionIndex, itemIndex, field, value) {
+            menuData.sections[sectionIndex].items[itemIndex][field] = value;
         }
 
         function deleteItem(sectionIndex, itemIndex) {
@@ -261,38 +253,70 @@
             renderMenu();
         }
 
-        function deleteSection(sectionIndex) {
-            menuData.sections.splice(sectionIndex, 1);
-            updateSectionSelect();
+        function addItem(sectionIndex) {
+            menuData.sections[sectionIndex].items.push({
+                name: 'New Item',
+                price: '0.00'
+            });
             renderMenu();
         }
 
-        function renderMenu() {
-            const preview = document.getElementById('menuPreview');
-            preview.innerHTML = menuData.sections.map((section, sectionIndex) => `
-                <div class="menu-section">
-                    <h3>
-                        ${section.name}
-                        <button class="delete-btn" onclick="deleteSection(${sectionIndex})">Delete Section</button>
-                    </h3>
-                    ${section.items.map((item, itemIndex) => `
-                        <div class="menu-item">
-                            <span>${item.name}</span>
-                            <span>
-                                GHC ${item.price}
-                                <button class="delete-btn" onclick="deleteItem(${sectionIndex}, ${itemIndex})">Delete</button>
-                            </span>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
+        function generateMenuHtml() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Green - Menu</title>
+    <style>
+        /* Copy your menu.html styles here */
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <header class="menu-header">
+            <h1>Hotel Green</h1>
+            <h2 style="margin-top: 10px; font-weight: normal; font-size: 1.5em;">Menu</h2>
+        </header>
+        
+        <nav class="tab-navigation">
+            ${menuData.sections.map((section, index) => `
+                <button class="tab-button ${index === 0 ? 'active' : ''}" 
+                    onclick="showSection('${section.id}')">${section.name}</button>
+            `).join('')}
+        </nav>
+        
+        ${menuData.sections.map((section, index) => `
+            <section id="${section.id}" class="menu-section ${index === 0 ? 'active' : ''}">
+                <h2>${section.name}</h2>
+                ${section.items.map(item => `
+                    <div class="menu-item">
+                        <span class="item-name">${item.name}</span>
+                        <span class="item-price"><span class="currency">GHC</span> ${item.price}</span>
+                    </div>
+                `).join('')}
+            </section>
+        `).join('')}
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.menu-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>`;
         }
 
-        function saveMenu() {
-            // Generate menu.html content
+        function saveChanges() {
             const menuContent = generateMenuHtml();
-            
-            // Create downloadable file
             const blob = new Blob([menuContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -301,21 +325,16 @@
             a.click();
         }
 
-        function generateMenuHtml() {
-            // Get the content from your existing menu.html file
-            // but replace the menu items with the current menuData
-            return `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Hotel Green - Menu</title>
-                <!-- Copy your existing menu.html styles here -->
-            </head>
-            <body>
-                <!-- Generate menu HTML based on menuData -->
-            </body>
-            </html>`;
+        function showTab(tabName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
         }
 
         function generateQR() {
@@ -336,7 +355,6 @@
         }
 
         // Initialize the page
-        updateSectionSelect();
         renderMenu();
     </script>
 </body>
