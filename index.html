@@ -163,7 +163,9 @@
         let qr = null;
         
         function generateQR() {
-            const menuUrl = window.location.href.replace('index.html', 'menu.html');
+            // Get the base URL without any file name
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+            const menuUrl = baseUrl + '/menu.html';
             
             // Clear previous QR code if it exists
             const qrContainer = document.getElementById('qrcode');
